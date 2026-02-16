@@ -1,0 +1,190 @@
+<div class="pos-container">
+
+  <!-- HEADER -->
+  <header class="pos-header">
+    <div class="logo">
+      <h2>🥪 Rikaso</h2>
+    </div>
+
+    <div class="header-info">
+      <span>{{ currentTime }}</span>
+      <span>Empleado: {{ currentUser }}</span>
+      <span>Pedido #{{ orderNumber }}</span>
+    </div>
+  </header>
+
+
+  <!-- BODY -->
+  <div class="pos-body">
+
+    <!-- CATEGORÍAS -->
+    <aside class="categories">
+      <button *ngFor="let category of categories" (click)="selectCategory(category.id)"
+        [class.active]="selectedCategory === category.id">
+        {{ category.name }}
+      </button>
+    </aside>
+
+
+    <!-- PRODUCTOS -->
+    <section class="products">
+
+      <div class="product-card" *ngFor="let product of filteredProducts" (click)="addProduct(product)"
+        [class.out-of-stock]="product.stock === 0">
+
+        <div class="product-image">
+          <img [src]="product.imageUrl || 'assets/no-image.png'" alt="{{ product.name }}">
+        </div>
+
+        <div class="product-name">
+          {{ product.name }}
+        </div>
+
+        <div class="product-price">
+          ${{ product.price }}
+        </div>
+
+        <div class="product-stock" [class.low-stock]="product.stock <= product.minStockAlert">
+          Stock: {{ product.stock }}
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- RESUMEN DEL PEDIDO -->
+    <aside class="order-summary">
+
+      <h3>Resumen</h3>
+
+      <div class="order-item" *ngFor="let item of orderItems; let i = index">
+
+        <div class="item-info">
+          <span>{{ item.quantity }} x {{ item.name }}</span>
+          <small *ngIf="item.modifiers?.length">
+            {{ item.modifiers.join(', ') }}
+          </small>
+        </div>
+
+        <div class="item-actions">
+          <span>${{ item.total }}</span>
+          <button (click)="increaseQty(item.productId)">+</button>
+          <button (click)="decreaseQty(item.productId)">-</button>
+          <button (click)="removeItem(item.productId)">🗑</button>
+        </div>
+
+      </div>
+
+      <div class="summary-totals">
+
+        <!-- Subtotal -->
+        <div class="subtotal-row" [class.has-discount]="discount > 0">
+          <span>Subtotal</span>
+          <span class="subtotal-amount">
+            ${{ subtotal }}
+          </span>
+        </div>
+
+        <!-- Descuento -->
+        <div class="discount-row" *ngIf="discount > 0">
+          <span>Descuento</span>
+          <span class="discount-amount">
+            - ${{ discount }}
+          </span>
+        </div>
+
+        <!-- Total Final -->
+        <div class="total-row">
+          <span>Total</span>
+          <span class="total-amount">
+            ${{ total }}
+          </span>
+        </div>
+
+      </div>
+
+
+    </aside>
+
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer class="pos-footer">
+    <button class="cancel" (click)="cancelOrder()">Cancelar</button>
+    <button class="discount-btn" (click)="openDiscountModal()">Descuento</button>
+    <button class="pay" [disabled]="orderItems.length === 0" (click)="checkout()">
+      COBRAR
+    </button>
+  </footer>
+
+</div>
+
+<!-- MODAL CONFIRMACION -->
+<div class="modal-overlay" *ngIf="showCheckoutModal">
+
+  <div class="modal">
+
+    <h2>Confirmar Venta</h2>
+
+    <div class="modal-items">
+      <div *ngFor="let item of orderItems">
+        {{ item.quantity }} x {{ item.name }} - ${{ item.total }}
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="modal-total">
+      <div>Subtotal: ${{ subtotal }}</div>
+      <div>Descuento: ${{ discount }}</div>
+      <div class="final-total">TOTAL: ${{ total }}</div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel-btn" [disabled]="isProcessing" (click)="closeModal()">
+        Cancelar
+      </button>
+
+      <button class="confirm-btn" [disabled]="isProcessing" (click)="confirmCheckout()">
+        <span *ngIf="!isProcessing">Confirmar</span>
+        <span *ngIf="isProcessing">Procesando...</span>
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL DESCUENTO -->
+<div class="modal-overlay" *ngIf="showDiscountModal">
+
+  <div class="modal">
+
+    <h2>Aplicar Descuento</h2>
+
+    <div class="discount-options">
+      <label>
+        <input type="radio" [(ngModel)]="discountType" value="percent">
+        Porcentaje (%)
+      </label>
+
+      <label>
+        <input type="radio" [(ngModel)]="discountType" value="amount">
+        Monto ($)
+      </label>
+    </div>
+
+    <input type="number" [(ngModel)]="discountInput" placeholder="Ingrese valor" />
+
+    <div class="modal-actions">
+      <button (click)="showDiscountModal = false">Cancelar</button>
+      <button (click)="applyDiscount()">Aplicar</button>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,486 @@
+/* ===============================
+   RESET BÁSICO
+=================================*/
+
+:host {
+  --primary-color: #e69c00;
+  --secondary-color: #fed97c;
+  --background-color: #f2f4f8;
+  --text-color: #1f2937;
+  --accent-color: #117737;
+}
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+
+/* ===============================
+   CONTENEDOR GENERAL
+=================================*/
+
+.pos-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f2f4f8;
+}
+
+
+/* ===============================
+   HEADER
+=================================*/
+
+.pos-header {
+  height: 70px;
+  background: var(--primary-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.pos-header h2 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.header-info span {
+  margin-left: 20px;
+  font-size: 14px;
+}
+
+
+/* ===============================
+   BODY PRINCIPAL
+=================================*/
+
+.pos-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 220px 1fr 380px;
+  overflow: hidden;
+}
+
+
+/* ===============================
+   CATEGORÍAS (IZQUIERDA)
+=================================*/
+
+.categories {
+  background: #111827;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.categories button {
+  height: 60px;
+  border: none;
+  border-radius: 10px;
+  background: #1f2937;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.categories button:hover {
+  background: #374151;
+}
+
+.categories button.active {
+  background: var(--primary-color);
+}
+
+
+/* ===============================
+   PRODUCTOS (CENTRO)
+=================================*/
+
+.products {
+  padding: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 22px;
+    align-content: start;     /* 🔥 CLAVE */
+  overflow-y: auto;
+}
+
+
+/* ===============================
+   TARJETA PRODUCTO
+=================================*/
+
+.product-card {
+    align-self: start;   /* 🔥 evita que se estire verticalmente */
+  position: relative;
+  background: white;
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;          /* 👈 controla el espacio interno */
+}
+
+
+/* 🔥 Hover sutil profesional */
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ===============================
+   IMAGEN CUADRADA
+=================================*/
+
+.product-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  /* 👈 imagen cuadrada perfecta */
+  overflow: hidden;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  background: #f3f4f6;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* ===============================
+   NOMBRE
+=================================*/
+
+.product-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1f2937;
+}
+
+
+/* ===============================
+   PRECIO MÁS GRANDE
+=================================*/
+
+.product-price {
+  font-size: 22px;
+  /* 👈 más grande */
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+
+/* ===============================
+   STOCK PEQUEÑO
+=================================*/
+
+.product-stock {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+
+/* ===============================
+   STOCK BAJO
+=================================*/
+
+.low-stock {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+
+/* ===============================
+   SIN STOCK - OVERLAY ROJO
+=================================*/
+
+.product-card.out-of-stock {
+  pointer-events: none;
+}
+
+.product-card.out-of-stock::after {
+  content: "SIN STOCK";
+  position: absolute;
+  inset: 0;
+  background: rgba(220, 38, 38, 0.85);
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+}
+
+
+/* ===============================
+   RESUMEN PEDIDO (DERECHA)
+=================================*/
+
+.order-summary {
+  background: #0f172a;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.order-summary h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.item-info small {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.item-actions button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: #1e293b;
+  color: white;
+  cursor: pointer;
+}
+
+.item-actions button:hover {
+  background: #334155;
+}
+
+
+/* ===============================
+   TOTALES
+=================================*/
+
+.totals {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #334155;
+}
+
+.totals div {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.totals .total {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+
+/* ===============================
+   FOOTER
+=================================*/
+
+.pos-footer {
+  height: 90px;
+  background: var(--secondary-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.pos-footer button {
+  height: 60px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 25px;
+  transition: 0.2s;
+}
+
+.cancel {
+  background: #ef4444;
+  color: white;
+}
+
+.discount {
+  background: #f59e0b;
+  color: white;
+}
+
+.pay {
+  background: #16a34a;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  width: 320px;
+}
+
+.pay:hover {
+  transform: scale(1.03);
+}
+
+.low-stock {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+/* ===============================
+    MODAL DE PAGO
+=================================*/
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: white;
+  width: 420px;
+  border-radius: 16px;
+  padding: 25px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal h2 {
+  margin-top: 0;
+}
+
+.modal-items {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.modal-total {
+  margin-top: 10px;
+}
+
+.final-total {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.cancel-btn {
+  background: #ef4444;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.confirm-btn {
+  background: var(--accent-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.confirm-btn:disabled, .cancel-btn:disabled  {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.discount-options {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.modal input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.summary-totals {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+}
+
+.summary-totals div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.subtotal-row.has-discount .subtotal-amount {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.discount-row {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.discount-amount {
+  color: #dc2626;
+}
+
+.total-row {
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: bold;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.total-amount {
+  font-size: 24px;
+  color: #eee;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
