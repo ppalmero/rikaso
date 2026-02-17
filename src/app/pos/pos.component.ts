@@ -47,6 +47,9 @@ export class PosComponent implements OnInit {
 
   private orderSub!: Subscription;
 
+  isDrawerOpen = false;
+
+
   constructor(
     private productService: ProductService,
     private orderService: OrderService,
@@ -242,6 +245,7 @@ export class PosComponent implements OnInit {
       this.showCheckoutModal = false;
       this.orderNumber = Math.floor(Math.random() * 10000);
       this.removeDiscount();
+      this.closeDrawer();
 
     } catch (error: any) {
       alert(error.message);
@@ -259,6 +263,14 @@ export class PosComponent implements OnInit {
     this.showDiscountModal = true;
   }
 
+  openDrawer() {
+    if (this.orderItems.length === 0) return;
+    this.isDrawerOpen = true;
+  }
+
+  closeDrawer() {
+    this.isDrawerOpen = false;
+  }
 
   ngOnDestroy() {
     if (this.orderSub) {

@@ -9,6 +9,7 @@
   --text-color: #1f2937;
   --accent-color: #117737;
 }
+
 * {
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
@@ -64,7 +65,8 @@ body {
 .pos-body {
   flex: 1;
   display: grid;
-  grid-template-columns: 220px 1fr 380px;
+  grid-template-columns: 220px 1fr;
+  /*380px;*/
   overflow: hidden;
 }
 
@@ -110,7 +112,8 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 22px;
-    align-content: start;     /* 🔥 CLAVE */
+  align-content: start;
+  /* 🔥 CLAVE */
   overflow-y: auto;
 }
 
@@ -120,18 +123,20 @@ body {
 =================================*/
 
 .product-card {
-    align-self: start;   /* 🔥 evita que se estire verticalmente */
+  align-self: start;
+  /* 🔥 evita que se estire verticalmente */
   position: relative;
   background: white;
   border-radius: 14px;
   padding: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
 
   display: flex;
   flex-direction: column;
-  gap: 6px;          /* 👈 controla el espacio interno */
+  gap: 6px;
+  /* 👈 controla el espacio interno */
 }
 
 
@@ -236,11 +241,24 @@ body {
 =================================*/
 
 .order-summary {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  /* oculto */
+  width: 380px;
+  height: 100vh;
   background: #0f172a;
   color: white;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  transition: right 0.3s ease;
+  z-index: 1000;
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.order-summary.open {
+  right: 0;
 }
 
 .order-summary h3 {
@@ -280,6 +298,13 @@ body {
 
 .item-actions button:hover {
   background: #334155;
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 
@@ -363,7 +388,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -422,7 +447,8 @@ body {
   cursor: pointer;
 }
 
-.confirm-btn:disabled, .cancel-btn:disabled  {
+.confirm-btn:disabled,
+.cancel-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -479,8 +505,58 @@ body {
   color: #eee;
 }
 
+/* ===============================
+   BOTÓN CARRITO FLOTANTE
+=================================*/
+
+.cart-fab {
+  position: fixed;
+  bottom: 110px;
+  /* arriba del footer */
+  right: 30px;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  font-size: 26px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+  z-index: 1001;
+}
+
+.cart-fab:hover {
+  transform: scale(1.1);
+}
+
+/* Badge contador */
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ef4444;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

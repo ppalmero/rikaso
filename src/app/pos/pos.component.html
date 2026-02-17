@@ -55,9 +55,17 @@
 
 
     <!-- RESUMEN DEL PEDIDO -->
-    <aside class="order-summary">
+    <div class="drawer-overlay" *ngIf="isDrawerOpen" (click)="closeDrawer()">
+    </div>
+    <aside class="order-summary" [class.open]="isDrawerOpen">
 
-      <h3>Resumen</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Resumen</h3>
+        <button (click)="closeDrawer()"
+          style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">
+          ✕
+        </button>
+      </div>
 
       <div class="order-item" *ngFor="let item of orderItems; let i = index">
 
@@ -115,10 +123,17 @@
   <footer class="pos-footer">
     <button class="cancel" (click)="cancelOrder()">Cancelar</button>
     <button class="discount-btn" (click)="openDiscountModal()">Descuento</button>
-    <button class="pay" [disabled]="orderItems.length === 0" (click)="checkout()">
+    <button class="pay" [disabled]="orderItems.length === 0" (click)="openDrawer()">
       COBRAR
     </button>
   </footer>
+
+  <button class="cart-fab" *ngIf="orderItems.length > 0" (click)="openDrawer()">
+    🛒
+    <span class="cart-badge">
+      {{ orderItems.length }}
+    </span>
+  </button>
 
 </div>
 
