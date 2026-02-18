@@ -113,6 +113,11 @@
 
       </div>
 
+      <div class="drawer-actions">
+        <button class="checkout-btn" [disabled]="orderItems.length === 0" (click)="checkout()">
+          Cobrar
+        </button>
+      </div>
 
     </aside>
 

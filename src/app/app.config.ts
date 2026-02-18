@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     "appId": "1:1023143787977:web:f8f3ebe24eb17a6678fc18", 
     //"databaseURL": "https://angular-4e797-default-rtdb.firebaseio.com", 
     "storageBucket": "rikaso.firebasestorage.app", 
-    "apiKey": "A", 
+    "apiKey": "AIzaSyD-MCzQhvByMkRnxybpuFc6S5-tL7heqG0", 
     "authDomain": "rikaso.firebaseapp.com", 
     "messagingSenderId": "1023143787977" })), 
     provideFirestore(() => getFirestore()), provideDatabase(() => getDatabase()), provideStorage(() => getStorage())]

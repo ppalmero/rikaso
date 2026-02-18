@@ -180,6 +180,8 @@ export class PosComponent implements OnInit {
 
   checkout() {
     if (this.orderItems.length === 0) return;
+    //this.showCheckoutModal = true;
+    this.isDrawerOpen = false; // cerrar drawer
     this.showCheckoutModal = true;
   }
 
