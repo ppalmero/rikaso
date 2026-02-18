@@ -5,7 +5,7 @@ export const environment = {
         appId: "1:196515732299:web:d8464b663d5421bf2826ce",
         //"databaseURL": "https://angular-4e797-default-rtdb.firebaseio.com", 
         storageBucket: "departamentos-111d8.firebasestorage.app",
-        apiKey: "AIzaSyDldir2oIA3fIDHUOHWwyoVHQln7zV_yrU",
+        apiKey: "A",
         authDomain: "departamentos-111d8.firebaseapp.com",
         messagingSenderId: "196515732299"
     }
