@@ -1,0 +1,51 @@
+<h2 class="section-title">Gestión de Stock</h2>
+
+<div class="stock-actions">
+
+  <input 
+    type="number" 
+    [(ngModel)]="stockToAdd"
+    placeholder="Cantidad a agregar"
+    class="stock-input">
+
+  <button 
+    class="primary-btn"
+    [disabled]="selectedProducts.length === 0 || stockToAdd <= 0"
+    (click)="addStock()">
+    Agregar a seleccionados
+  </button>
+
+</div>
+
+<div class="product-grid">
+
+  <div 
+    class="stock-card"
+    *ngFor="let product of products"
+    [class.low-stock]="product.stock <= 5">
+
+    <div class="card-top">
+
+      <input 
+        type="checkbox"
+        [checked]="selectedProducts.includes(product.id)"
+        (change)="toggleSelection(product.id)">
+
+      <img [src]="product.imageUrl" class="product-image">
+
+    </div>
+
+    <div class="card-body">
+      <h3>{{ product.name }}</h3>
+      <p>Stock: <strong>{{ product.stock }}</strong></p>
+    </div>
+
+    <button 
+      class="delete-btn"
+      (click)="deleteProduct(product.id)">
+      Eliminar
+    </button>
+
+  </div>
+
+</div>

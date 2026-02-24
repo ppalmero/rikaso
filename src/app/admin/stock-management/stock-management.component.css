@@ -1,0 +1,80 @@
+.section-title {
+    margin-bottom: 20px;
+}
+
+.stock-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stock-input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 180px;
+}
+
+.primary-btn {
+    background: #e69c00;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary-btn:disabled {
+    opacity: 0.6;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.stock-card {
+    background: white;
+    border-radius: 14px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: 0.2s;
+}
+
+.stock-card:hover {
+    transform: translateY(-3px);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.card-body h3 {
+    margin: 10px 0 5px;
+}
+
+.low-stock {
+    border: 2px solid #ef4444;
+}
+
+.delete-btn {
+    width: 100%;
+    margin-top: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}

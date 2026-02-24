@@ -11,6 +11,9 @@
       <span>Empleado: {{ currentUser }}</span>
       <span>Pedido #{{ orderNumber }}</span>
     </div>
+    <button class="admin-btn" routerLink="/admin">
+      ⚙ Admin
+    </button>
   </header>
 
 
@@ -19,17 +22,29 @@
 
     <!-- CATEGORÍAS -->
     <aside class="categories">
-      <button *ngFor="let category of categories" (click)="selectCategory(category.id)"
+      <!--button *ngFor="let category of categories" (click)="selectCategory(category.id)"
         [class.active]="selectedCategory === category.id">
         {{ category.name }}
-      </button>
+      </button-->
+      <div class="categories-panel">
+
+        <button class="category-btn" [class.active]="!selectedCategoryId" (click)="selectCategory(null)">
+          Todas
+        </button>
+
+        <button class="category-btn" *ngFor="let category of categories"
+          [class.active]="selectedCategoryId === category.id" (click)="selectCategory(category.id)">
+          {{ category.name }}
+        </button>
+
+      </div>
     </aside>
 
 
     <!-- PRODUCTOS -->
     <section class="products">
 
-      <div class="product-card" *ngFor="let product of filteredProducts" (click)="addProduct(product)"
+      <!--div class="product-card" *ngFor="let product of filteredProducts" (click)="addProduct(product)"
         [class.out-of-stock]="product.stock === 0">
 
         <div class="product-image">
@@ -46,6 +61,28 @@
 
         <div class="product-stock" [class.low-stock]="product.stock <= product.minStockAlert">
           Stock: {{ product.stock }}
+        </div>
+
+      </div-->
+
+      <div class="product-card" *ngFor="let product of filteredProducts" (click)="addProduct(product)"
+        [class.out-of-stock]="product.stock === 0"
+        [class.low-stock]="product.stock > 0 && product.stock <= product.minStockAlert">
+
+        <div class="product-image">
+          <img [src]="product.imageUrl" alt="">
+          <div class="overlay" *ngIf="product.stock === 0">
+            Sin stock
+          </div>
+          <div class="low-stock-label" *ngIf="product.stock > 0 && product.stock <= product.minStockAlert">
+            Stock bajo
+          </div>
+        </div>
+
+        <div class="product-name">
+          <h3>{{ product.name }}</h3>
+          <p class="product-price">${{ product.price }}</p>
+          <small>Stock: {{ product.stock }}</small>
         </div>
 
       </div>
@@ -126,9 +163,9 @@
 
   <!-- FOOTER -->
   <footer class="pos-footer">
-    <button class="cancel" (click)="cancelOrder()">Cancelar</button>
-    <button class="discount-btn" (click)="openDiscountModal()">Descuento</button>
-    <button class="pay" [disabled]="orderItems.length === 0" (click)="openDrawer()">
+    <button class="cancel" (click)="cancelOrder()" [disabled]="isCartEmpty">Cancelar</button>
+    <button class="discount-btn" (click)="openDiscountModal()" [disabled]="isCartEmpty">Descuento</button>
+    <button class="pay" [disabled]="orderItems.length === 0" (click)="openDrawer()" [disabled]="isCartEmpty">
       COBRAR
     </button>
   </footer>

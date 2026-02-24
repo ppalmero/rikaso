@@ -1,0 +1,23 @@
+<div class="admin-container">
+
+  <aside class="admin-sidebar">
+    <h2>Administración</h2>
+
+    <a routerLink="add-product" routerLinkActive="active">
+      ➕ Agregar Producto
+    </a>
+
+    <a routerLink="stock" routerLinkActive="active">
+      📦 Stock Productos
+    </a>
+
+    <a routerLink="/" class="back">
+      ← Volver al POS
+    </a>
+  </aside>
+
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

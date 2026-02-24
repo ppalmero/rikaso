@@ -7,29 +7,38 @@ import { Product } from '../shared/models/product';
 import { Order } from '../shared/models/order';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { Category } from '../shared/models/category';
+import { CategoryService } from '../shared/services/category.service';
+import { ToastService } from '../shared/services/toast.service';
 
 @Component({
   selector: 'app-pos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './pos.component.html',
   styleUrls: ['./pos.component.css']
 })
 
 export class PosComponent implements OnInit {
 
-  categories = [
+  /*categories = [
     { id: 'clasicos', name: 'Clásicos' },
     { id: 'especiales', name: 'Especiales' },
     { id: 'combos', name: 'Combos' },
     { id: 'bebidas', name: 'Bebidas' },
     { id: 'extras', name: 'Extras' },
     { id: 'promos', name: 'Promos' }
-  ];
+  ];*/
+
+  categories: Category[] = [];
+  selectedCategoryId: string | null = null;
+
+  allProducts: Product[] = [];
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
-  selectedCategory: string | null = null;
+  //selectedCategory: string | null = null;
 
   orderItems: any[] = [];
   discount: number = 0;
@@ -53,11 +62,22 @@ export class PosComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private orderService: OrderService,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private categoryService: CategoryService,
+    private toast: ToastService
   ) { }
 
   ngOnInit(): void {
-    this.loadProducts();
+    //this.loadProducts();
+    this.categoryService.getCategories().subscribe(cats => {
+      this.categories = cats.filter(c => c.active);
+    });
+
+    this.productService.getProducts().subscribe(products => {
+      this.allProducts = products.filter(p => p.active);
+      this.applyFilter();
+    });
+
     this.listenOrder();
     this.updateClock();
     setInterval(() => this.updateClock(), 1000);
@@ -78,19 +98,32 @@ export class PosComponent implements OnInit {
     });
   }
 
-  selectCategory(categoryId: string) {
+  /*selectCategory(categoryId: string) {
     this.selectedCategory = categoryId;
+    this.applyFilter();
+  }*/
+
+  selectCategory(categoryId: string | null) {
+    this.selectedCategoryId = categoryId;
     this.applyFilter();
   }
 
   applyFilter() {
-    if (!this.selectedCategory) {
+    /*if (!this.selectedCategory) {
       this.filteredProducts = this.products;
       return;
     }
 
     this.filteredProducts = this.products.filter(
       p => p.categoryId === this.selectedCategory
+    );*/
+    if (!this.selectedCategoryId) {
+      this.filteredProducts = this.allProducts;
+      return;
+    }
+
+    this.filteredProducts = this.allProducts.filter(
+      p => p.categoryId === this.selectedCategoryId
     );
   }
 
@@ -99,9 +132,22 @@ export class PosComponent implements OnInit {
     this.orderService.addProduct(product);
   }
 
+  hasLowStock(categoryId: string): boolean {
+
+    return this.allProducts.some(product =>
+      product.categoryId === categoryId &&
+      product.stock <= product.minStockAlert &&
+      product.active
+    );
+
+  }
   // =============================
   // ORDEN
   // =============================
+
+  get isCartEmpty(): boolean {
+    return this.orderItems.length === 0;
+  }
 
   listenOrder() {
     this.orderSub = this.orderService.items$.subscribe(items => {
@@ -153,7 +199,7 @@ export class PosComponent implements OnInit {
   }*/
 
   applyDiscount() {
-
+    if (this.isCartEmpty) return;
     if (this.discountType === 'percent') {
       this.discount = (this.subtotal * this.discountInput) / 100;
     } else {
@@ -238,7 +284,6 @@ export class PosComponent implements OnInit {
         // 4️⃣ Guardar orden
         const orderRef = doc(collection(this.firestore, 'orders'));
         transaction.set(orderRef, order);
-
       });
 
       // 🔥 LIMPIAR
@@ -248,9 +293,9 @@ export class PosComponent implements OnInit {
       this.orderNumber = Math.floor(Math.random() * 10000);
       this.removeDiscount();
       this.closeDrawer();
-
+      this.toast.show('Orden cobrada correctamente', 'success');
     } catch (error: any) {
-      alert(error.message);
+      this.toast.show('Error al procesar la orden', 'error');
     } finally {
       this.isProcessing = false;
     }

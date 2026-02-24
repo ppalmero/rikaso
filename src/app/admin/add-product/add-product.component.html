@@ -1,0 +1,39 @@
+<h2 class="section-title">Agregar Producto</h2>
+
+<div class="form-card">
+
+  <label>Nombre</label>
+  <input [(ngModel)]="name" type="text" placeholder="Nombre del producto">
+
+  <label>Categoría</label>
+  <select [(ngModel)]="categoryId">
+    <option value="">Seleccionar categoría</option>
+    <option *ngFor="let cat of categories" [value]="cat.id">
+      {{ cat.name }}
+    </option>
+  </select>
+
+  <label>Precio</label>
+  <input type="number" [(ngModel)]="price">
+
+  <label>Stock inicial</label>
+  <input type="number" [(ngModel)]="stock">
+
+  <label>Alerta stock mínimo</label>
+  <input type="number" [(ngModel)]="minStockAlert">
+
+  <label class="checkbox-row">
+    <input type="checkbox" [(ngModel)]="active">
+    Producto activo
+  </label>
+
+  <label>Imagen</label>
+  <input type="file" (change)="onFileSelected($event)">
+
+  <button 
+    (click)="saveProduct()"
+    [disabled]="loading">
+    {{ loading ? 'Guardando...' : 'Guardar Producto' }}
+  </button>
+
+</div>

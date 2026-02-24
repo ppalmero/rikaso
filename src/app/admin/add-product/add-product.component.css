@@ -1,0 +1,93 @@
+.section-title {
+  margin-bottom: 25px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* Contenedor principal */
+.form-card {
+  max-width: 500px;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Inputs */
+.form-card input[type="text"],
+.form-card input[type="number"],
+.form-card input[type="file"] {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.form-card input:focus {
+  outline: none;
+  border-color: #e69c00;
+  box-shadow: 0 0 0 3px rgba(230, 156, 0, 0.15);
+}
+
+/* File input más limpio */
+.form-card input[type="file"] {
+  padding: 10px;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+/* Botón principal */
+.form-card button {
+  margin-top: 10px;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background: #e69c00;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.form-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(230, 156, 0, 0.3);
+}
+
+.form-card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-card select {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.form-card select:focus {
+  outline: none;
+  border-color: #e69c00;
+  box-shadow: 0 0 0 3px rgba(230, 156, 0, 0.15);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-card {
+    max-width: 100%;
+    padding: 20px;
+  }
+}

@@ -1,0 +1,46 @@
+.admin-container {
+  display: flex;
+  height: 100vh;
+}
+
+.admin-sidebar {
+  width: 240px;
+  background: #0f172a;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.admin-sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #1e293b;
+}
+
+.admin-sidebar a:hover {
+  background: #334155;
+}
+
+.admin-sidebar a.active {
+  background: #e69c00;
+}
+
+.admin-sidebar .back {
+  margin-top: auto;
+  background: #374151;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 30px;
+  background: #f2f4f8;
+  overflow-y: auto;
+}
