@@ -1,39 +1,70 @@
 <h2 class="section-title">Agregar Producto</h2>
 
 <div class="form-card">
+  <form [formGroup]="form" class="product-form">
+    <div class="field">
+      <label>Nombre</label>
+      <input formControlName="name" type="text" placeholder="Nombre del producto">
+      <div class="error" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
+        Nombre obligatorio (mínimo 2 caracteres)
+      </div>
+    </div>
 
-  <label>Nombre</label>
-  <input [(ngModel)]="name" type="text" placeholder="Nombre del producto">
+    <div class="field">
+      <label>Categoría</label>
+      <select formControlName="categoryId">
+        <option value="">Seleccionar categoría</option>
+        <option *ngFor="let cat of categories" [value]="cat.id">
+          {{ cat.name }}
+        </option>
+      </select>
+    </div>
 
-  <label>Categoría</label>
-  <select [(ngModel)]="categoryId">
-    <option value="">Seleccionar categoría</option>
-    <option *ngFor="let cat of categories" [value]="cat.id">
-      {{ cat.name }}
-    </option>
-  </select>
+    <div class="field">
+      <label>Precio</label>
+      <input type="number" formControlName="price">
+      <div class="error" *ngIf="form.get('price')?.touched && form.get('price')?.invalid">
+        Precio obligatorio (mínimo 0.01)
+      </div>
+    </div>
 
-  <label>Precio</label>
-  <input type="number" [(ngModel)]="price">
+    <div class="field">
+      <label>Stock inicial</label>
+      <input type="number" formControlName="stock">
+      <div class="error" *ngIf="form.get('stock')?.touched && form.get('stock')?.invalid">
+        Stock obligatorio (mínimo 0)
+      </div>
+    </div>
 
-  <label>Stock inicial</label>
-  <input type="number" [(ngModel)]="stock">
+    <div class="field">
+      <label>Alerta stock mínimo</label>
+      <input type="number" formControlName="minStockAlert">
+      <div class="error" *ngIf="form.get('minStockAlert')?.touched && form.get('minStockAlert')?.invalid">
+        Alerta stock mínimo obligatorio (mínimo 0)
+      </div>
+    </div>
 
-  <label>Alerta stock mínimo</label>
-  <input type="number" [(ngModel)]="minStockAlert">
+    <div class="field">
+      <label class="checkbox-row">
+        <input type="checkbox" formControlName="active">
+        Producto activo
+      </label>
+    </div>
 
-  <label class="checkbox-row">
-    <input type="checkbox" [(ngModel)]="active">
-    Producto activo
-  </label>
+    <div class="field">
+      <label>Imagen</label>
+      <input type="file" formControlName="imageUrl" accept="image/*" (change)="onFileSelected($event)">
 
-  <label>Imagen</label>
-  <input type="file" (change)="onFileSelected($event)">
+      <div class="error" *ngIf="form.get('imageUrl')?.touched && form.get('imageUrl')?.invalid">
+        Imagen obligatoria
+      </div>
+    </div>
+    <div class="image-preview" *ngIf="imagePreview">
+      <img [src]="imagePreview" alt="Preview" />
+    </div>
 
-  <button 
-    (click)="saveProduct()"
-    [disabled]="loading">
-    {{ loading ? 'Guardando...' : 'Guardar Producto' }}
-  </button>
-
+    <button (click)="saveProduct()" [disabled]="form.invalid || loading">
+      {{ loading ? 'Guardando...' : 'Guardar Producto' }}
+    </button>
+  </form>
 </div>

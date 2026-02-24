@@ -1,13 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ProductService } from '../../shared/services/product.service';
 import { CategoryService } from '../../shared/services/category.service';
 import { Product } from '../../shared/models/product';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [ProductService, CategoryService],
   templateUrl: './add-product.component.html',
   styleUrls: ['./add-product.component.css']
@@ -26,16 +27,34 @@ export class AddProductComponent implements OnInit {
 
   categories: any[] = [];
 
+  imagePreview: string | null = null;
+  uploadingImage = false;
+
   private imgbbApiKey = '0214b979a6fc244cbd91ce07422510fd';
+  form: any;
 
   constructor(
     private productService: ProductService,
-    private categoryService: CategoryService
-  ) {}
+    private categoryService: CategoryService,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
+    this.form = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      categoryId: ['', Validators.required],
+      price: [null, [Validators.required, Validators.min(0.01)]],
+      stock: [0, [Validators.required, Validators.min(0)]],
+      minStockAlert: [0, [Validators.required, Validators.min(0)]],
+      active: [true, Validators.required],
+      imageUrl: ['', Validators.required]
+    });
     this.categoryService.getCategories().subscribe(cats => {
       this.categories = cats;
+    });
+
+    this.form.get('imageUrl')?.valueChanges.subscribe((url: string | null) => {
+      this.imagePreview = url;
     });
   }
 

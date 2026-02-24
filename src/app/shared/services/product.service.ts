@@ -33,4 +33,11 @@ export class ProductService {
   async addProduct(product: any) {
     await addDoc(collection(this.firestore, 'products'), product);
   }
+
+  async setStock(productId: string, newStock: number) {
+    const ref = doc(this.firestore, `products/${productId}`);
+    await updateDoc(ref, {
+      stock: newStock
+    });
+  }
 }
