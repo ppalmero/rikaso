@@ -22,7 +22,10 @@
 
     <div class="field">
       <label>Precio</label>
-      <input type="number" formControlName="price">
+      <div class="input-with-prefix">
+        <span class="prefix">$</span>
+        <input type="number" formControlName="price" (keypress)="allowOnlyNumbersDecimal($event)">
+      </div>
       <div class="error" *ngIf="form.get('price')?.touched && form.get('price')?.invalid">
         Precio obligatorio (mínimo 0.01)
       </div>
@@ -30,7 +33,7 @@
 
     <div class="field">
       <label>Stock inicial</label>
-      <input type="number" formControlName="stock">
+      <input type="number" formControlName="stock" (keypress)="allowOnlyNumbers($event)">
       <div class="error" *ngIf="form.get('stock')?.touched && form.get('stock')?.invalid">
         Stock obligatorio (mínimo 0)
       </div>
@@ -38,7 +41,7 @@
 
     <div class="field">
       <label>Alerta stock mínimo</label>
-      <input type="number" formControlName="minStockAlert">
+      <input type="number" formControlName="minStockAlert" (keypress)="allowOnlyNumbers($event)">
       <div class="error" *ngIf="form.get('minStockAlert')?.touched && form.get('minStockAlert')?.invalid">
         Alerta stock mínimo obligatorio (mínimo 0)
       </div>
