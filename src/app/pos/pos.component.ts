@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { Category } from '../shared/models/category';
 import { CategoryService } from '../shared/services/category.service';
 import { ToastService } from '../shared/services/toast.service';
+import { AudioService } from '../shared/services/audio.service';
 
 @Component({
   selector: 'app-pos',
@@ -58,13 +59,18 @@ export class PosComponent implements OnInit {
 
   isDrawerOpen = false;
 
+  animatedProductId: string | null = null;
+
+  currentOrderNumber: string | null = null;
+  branchId = 'S1';
 
   constructor(
     private productService: ProductService,
     private orderService: OrderService,
     private firestore: Firestore,
     private categoryService: CategoryService,
-    private toast: ToastService
+    private toast: ToastService,
+    private audio: AudioService
   ) { }
 
   ngOnInit(): void {
@@ -76,6 +82,10 @@ export class PosComponent implements OnInit {
     this.productService.getProducts().subscribe(products => {
       this.allProducts = products.filter(p => p.active);
       this.applyFilter();
+    });
+
+    this.orderService.getCurrentOrderNumber(this.branchId).then(num => {
+      this.currentOrderNumber = num;
     });
 
     this.listenOrder();
@@ -130,16 +140,23 @@ export class PosComponent implements OnInit {
   addProduct(product: Product) {
     if (product.stock <= 0) return;
     this.orderService.addProduct(product);
+    this.audio.playAdd();
+    this.triggerCardAnimation(product.id);
+  }
+
+  triggerCardAnimation(productId: string) {
+    this.animatedProductId = productId;
+    setTimeout(() => {
+      this.animatedProductId = null;
+    }, 300);
   }
 
   hasLowStock(categoryId: string): boolean {
-
     return this.allProducts.some(product =>
       product.categoryId === categoryId &&
       product.stock <= product.minStockAlert &&
       product.active
     );
-
   }
   // =============================
   // ORDEN
@@ -182,7 +199,6 @@ export class PosComponent implements OnInit {
     if (this.orderItems.length === 0) return;
 
     const confirmCancel = confirm("¿Cancelar pedido actual?");
-
     if (!confirmCancel) return;
 
     this.orderService.clearOrder();
@@ -205,12 +221,10 @@ export class PosComponent implements OnInit {
     } else {
       this.discount = this.discountInput;
     }
-
     // Seguridad: no permitir descuento mayor al subtotal
     if (this.discount > this.subtotal) {
       this.discount = this.subtotal;
     }
-
     this.showDiscountModal = false;
     this.discountInput = 0;
   }
@@ -235,9 +249,11 @@ export class PosComponent implements OnInit {
 
     if (this.isProcessing) return;
 
-    this.isProcessing = true;
+    //const orderNumber = await this.orderService.getNextOrderNumber(this.branchId);
 
+    this.isProcessing = true;
     const order: Order = {
+      orderNumber: this.currentOrderNumber!,
       createdAt: new Date(),
       userId: this.currentUser,
       items: this.orderItems,
@@ -284,13 +300,15 @@ export class PosComponent implements OnInit {
         // 4️⃣ Guardar orden
         const orderRef = doc(collection(this.firestore, 'orders'));
         transaction.set(orderRef, order);
+        this.orderService.getNextOrderNumber(this.branchId).then(num => {
+          this.currentOrderNumber = num;
+        });
       });
 
       // 🔥 LIMPIAR
       this.orderService.clearOrder();
       this.discount = 0;
       this.showCheckoutModal = false;
-      this.orderNumber = Math.floor(Math.random() * 10000);
       this.removeDiscount();
       this.closeDrawer();
       this.toast.show('Orden cobrada correctamente', 'success');
@@ -317,6 +335,10 @@ export class PosComponent implements OnInit {
 
   closeDrawer() {
     this.isDrawerOpen = false;
+  }
+
+  async prepareNewOrder() {
+    this.currentOrderNumber = await this.orderService.getCurrentOrderNumber(this.branchId);
   }
 
   ngOnDestroy() {

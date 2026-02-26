@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { OrderItem } from '../models/order-item';
 import { Product } from '../models/product';
+import { doc, Firestore, getDoc, runTransaction } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
@@ -10,6 +11,12 @@ export class OrderService {
   private itemsSubject = new BehaviorSubject<OrderItem[]>([]);
 
   items$ = this.itemsSubject.asObservable();
+
+  constructor(private firestore: Firestore) { }
+
+  private formatNumber(num: number): string {
+    return num.toString().padStart(6, '0');
+  }
 
   addProduct(product: Product) {
 
@@ -69,6 +76,33 @@ export class OrderService {
 
   getSubtotal(): number {
     return this.items.reduce((acc, i) => acc + i.total, 0);
+  }
+
+  async getNextOrderNumber(branchId: string): Promise<string> {
+    const counterRef = doc(this.firestore, `counters/${branchId}`);
+    return await runTransaction(this.firestore, async (transaction) => {
+      const counterDoc = await transaction.get(counterRef);
+      if (!counterDoc.exists()) {
+        throw new Error('Order counter does not exist');
+      }
+      const currentNumber = counterDoc.data()['lastNumber'] || 0;
+      const newNumber = currentNumber + 1;
+      transaction.update(counterRef, {
+        lastNumber: newNumber
+      });
+      return `${branchId}-${this.formatNumber(newNumber)}`;
+    });
+
+  }
+
+  async getCurrentOrderNumber(branchId: string): Promise<string> {
+    const counterRef = doc(this.firestore, `counters/${branchId}`);
+    const snap = await getDoc(counterRef);
+    if (!snap.exists())
+      return `${branchId}-000001`;
+
+    const lastNumber = snap.data()['lastNumber'] || 0;
+    return `${branchId}-${this.formatNumber(lastNumber)}`;
   }
 
 }

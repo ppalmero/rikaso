@@ -2,6 +2,7 @@ import { OrderItem } from "./order-item";
 
 export interface Order {
     id?: string;
+  orderNumber: string;
   createdAt: any;
   userId: string;
   items: OrderItem[];
