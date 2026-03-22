@@ -15,6 +15,12 @@
     <button class="admin-btn" routerLink="/admin">
       ⚙ Admin
     </button>
+    <select [(ngModel)]="selectedCustomer" (change)="onSelectCustomer()">
+      <option value="">Consumidor Final</option>
+      <option *ngFor="let c of customers" [value]="c.id">
+        {{ c.nombre }}
+      </option>
+    </select>
   </header>
 
 

@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AudioService {
 
-  private addSound = new Audio('assets/sounds/add.mp3');
+  private addSound = new Audio('assets/sounds/add.wav');
 
   constructor() {
     this.addSound.volume = 0.4; // sutil

@@ -6,6 +6,7 @@ export interface Order {
   createdAt: any;
   userId: string;
   items: OrderItem[];
+  customerId: string;
   subtotal: number;
   discount: number;
   total: number;

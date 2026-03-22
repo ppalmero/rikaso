@@ -12,6 +12,9 @@ import { Category } from '../shared/models/category';
 import { CategoryService } from '../shared/services/category.service';
 import { ToastService } from '../shared/services/toast.service';
 import { AudioService } from '../shared/services/audio.service';
+import { CustomerPriceService } from '../shared/services/customer-price.service';
+import { Customers } from '../shared/models/customers';
+import { CustomerService } from '../shared/services/customer.service';
 
 @Component({
   selector: 'app-pos',
@@ -64,13 +67,19 @@ export class PosComponent implements OnInit {
   currentOrderNumber: string | null = null;
   branchId = 'S1';
 
+  customers: Customers[] = [];
+  selectedCustomer: any = null;
+  customerPrices: { [productId: string]: number } = {};
+
   constructor(
     private productService: ProductService,
     private orderService: OrderService,
     private firestore: Firestore,
     private categoryService: CategoryService,
     private toast: ToastService,
-    private audio: AudioService
+    private audio: AudioService,
+    private customerPriceService: CustomerPriceService,
+    private customerService: CustomerService
   ) { }
 
   ngOnInit(): void {
@@ -86,6 +95,10 @@ export class PosComponent implements OnInit {
 
     this.orderService.getCurrentOrderNumber(this.branchId).then(num => {
       this.currentOrderNumber = num;
+    });
+
+    this.customerService.getCustomers().subscribe(custs => {
+      this.customers = custs;
     });
 
     this.listenOrder();
@@ -139,7 +152,17 @@ export class PosComponent implements OnInit {
 
   addProduct(product: Product) {
     if (product.stock <= 0) return;
-    this.orderService.addProduct(product);
+
+    const specialPrice = this.customerPrices[product.id];
+    const finalPrice = specialPrice ?? product.price;
+
+    let productToAdd = { ...product, price: finalPrice };
+
+    console.log('Agregando producto al carrito:', productToAdd);
+    console.log('Precios especiales del cliente:', this.customerPrices);
+    
+    this.orderService.addProduct(productToAdd);
+
     this.audio.playAdd();
     this.triggerCardAnimation(product.id);
   }
@@ -195,7 +218,6 @@ export class PosComponent implements OnInit {
   }
 
   cancelOrder() {
-
     if (this.orderItems.length === 0) return;
 
     const confirmCancel = confirm("¿Cancelar pedido actual?");
@@ -256,6 +278,7 @@ export class PosComponent implements OnInit {
       orderNumber: this.currentOrderNumber!,
       createdAt: new Date(),
       userId: this.currentUser,
+      customerId: this.selectedCustomer?.id || 'Consumidor Final',
       items: this.orderItems,
       subtotal: this.subtotal,
       discount: this.discount,
@@ -264,9 +287,7 @@ export class PosComponent implements OnInit {
     };
 
     try {
-
       await runTransaction(this.firestore, async (transaction) => {
-
         const productRefs: any[] = [];
         const productSnaps: any[] = [];
 
@@ -339,6 +360,30 @@ export class PosComponent implements OnInit {
 
   async prepareNewOrder() {
     this.currentOrderNumber = await this.orderService.getCurrentOrderNumber(this.branchId);
+  }
+
+  // =============================
+  // CLIENTES Y PRECIOS
+  // =============================
+  async onSelectCustomer() {
+
+    //this.selectedCustomer = customer;
+
+    console.log('Cliente seleccionado:', this.selectedCustomer);
+    this.customerPrices =
+      await this.customerPriceService.getPricesByCustomer(this.selectedCustomer);
+
+    this.recalculateCart(); // 🔥 recalcula todo
+  }
+
+  recalculateCart() {
+    this.orderItems = this.orderItems.map(item => {
+      const specialPrice = this.customerPrices[item.id];
+      return {
+        ...item,
+        price: specialPrice ?? item.originalPrice ?? item.price
+      };
+    });
   }
 
   ngOnDestroy() {
