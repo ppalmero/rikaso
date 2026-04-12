@@ -1,0 +1,78 @@
+<div class="form-card">
+    <label>Cliente</label>
+
+    <select [(ngModel)]="selectedCustomer" (change)="onCustomerChange()">
+        <option value="">Seleccionar cliente</option>
+        <option *ngFor="let c of customers" [value]="c.id">
+            {{ c.nombre }} - {{ c.identification }}
+        </option>
+    </select>
+    <button (click)="openProductSelector()">
+        + Agregar producto
+    </button>
+
+    <table *ngIf="selectedCustomer">
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Producto</th>
+                <th>Precio base</th>
+                <th>Precio especial</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let item of customerProductPrices">
+
+                <td>
+                    <img [src]="item.product.imageUrl" width="50" />
+                </td>
+
+                <td>
+                    {{ item.product.name }}
+                </td>
+
+                <td>
+                    ${{ item.product.price }}
+                </td>
+
+                <td>
+                   $ <input type="number" [(ngModel)]="item.precio" (blur)="updatePrice(item)" />
+                    <span *ngIf="itemStates[item.customerPricesId] === 'saving'">⏳</span>
+                    <span *ngIf="itemStates[item.customerPricesId] === 'saved'">✔</span>
+                </td>
+
+                <td>
+                    <button (click)="removeProduct(item)">❌</button>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+    <!-- MODAL CONFIRMACION -->
+    <div class="modal" *ngIf="showProductSelector">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Agregar producto</h2>
+                <!--button class="close-btn" (click)="closeProductSelector()">✕</button-->
+            </div>
+            <input type="text" placeholder="Buscar producto..." (input)="onSearchChange($event)" />
+            <div class="product-list">
+                <div class="product-item" *ngFor="let product of filteredProducts">
+                    <img [src]="product.imageUrl" width="50" />
+                    <div class="info">
+                        <div>{{ product.name }}</div>
+                        <small>${{ product.price }}</small>
+                    </div>
+                    <button (click)="addProductFromSelector(product)">
+                        ➕
+                    </button>
+                </div>
+            </div>
+
+            <button (click)="closeProductSelector()">Cerrar</button>
+        </div>
+    </div>
+
+</div>

@@ -371,7 +371,7 @@ export class PosComponent implements OnInit {
 
     console.log('Cliente seleccionado:', this.selectedCustomer);
     this.customerPrices =
-      await this.customerPriceService.getPricesByCustomer(this.selectedCustomer);
+      await this.customerPriceService.getPricesByCustomerPOS(this.selectedCustomer);
 
     this.recalculateCart(); // 🔥 recalcula todo
   }

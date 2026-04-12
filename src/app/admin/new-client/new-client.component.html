@@ -1,0 +1,34 @@
+<h2 class="section-title">Nuevo Cliente</h2>
+
+<div class="form-card">
+  <form [formGroup]="form" class="product-form">
+    <div class="field">
+      <label>Nombre</label>
+      <input formControlName="name" type="text" placeholder="Nombre del producto">
+      <div class="error" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
+        Nombre obligatorio (mínimo 2 caracteres)
+      </div>
+    </div>
+
+
+    <div class="field">
+      <label>CUIT - CUIL</label>
+      <input type="number" formControlName="identification" placeholder="CUIT o CUIL del cliente">
+      <div class="error" *ngIf="form.get('identification')?.touched && form.get('identification')?.invalid">
+        CUIT - CUIL obligatorio (mínimo 0)
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Contacto</label>
+      <input type="text" formControlName="contacto" placeholder="Contacto del cliente">
+      <div class="error" *ngIf="form.get('contacto')?.touched && form.get('contacto')?.invalid">
+        Contacto obligatorio (mínimo 6 caracteres)
+      </div>
+    </div>
+
+    <button (click)="saveClient()" [disabled]="form.invalid || loading">
+      {{ loading ? 'Guardando...' : 'Guardar Cliente' }}
+    </button>
+  </form>
+</div>
