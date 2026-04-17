@@ -68,7 +68,7 @@ export class PosComponent implements OnInit {
   branchId = 'S1';
 
   customers: Customers[] = [];
-  selectedCustomer: any = null;
+  selectedCustomer: any = "Consumidor Final";
   customerPrices: { [productId: string]: number } = {};
 
   constructor(

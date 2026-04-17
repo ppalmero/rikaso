@@ -17,7 +17,7 @@ import { ToastService } from '../../shared/services/toast.service';
 })
 
 export class SpecialPriceComponent implements OnInit {
-  selectedCustomer: any = null;
+  selectedCustomer: any = "Seleccionar cliente";
 
   products: Product[] = [];
 

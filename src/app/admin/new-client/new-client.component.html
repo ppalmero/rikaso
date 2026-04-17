@@ -4,7 +4,7 @@
   <form [formGroup]="form" class="product-form">
     <div class="field">
       <label>Nombre</label>
-      <input formControlName="name" type="text" placeholder="Nombre del producto">
+      <input formControlName="name" type="text" placeholder="Nombre del cliente">
       <div class="error" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
         Nombre obligatorio (mínimo 2 caracteres)
       </div>
