@@ -56,7 +56,8 @@
 
     <div class="field">
       <label>Imagen</label>
-      <input type="file" formControlName="imageUrl" accept="image/*" (change)="onFileSelected($event)">
+      <input type="file" accept="image/*" (change)="onFileSelected($event)">
+      <input type="text" formControlName="imageUrl" hidden>
 
       <div class="error" *ngIf="form.get('imageUrl')?.touched && form.get('imageUrl')?.invalid">
         Imagen obligatoria

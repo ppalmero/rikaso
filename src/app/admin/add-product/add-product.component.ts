@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ProductService } from '../../shared/services/product.service';
 import { CategoryService } from '../../shared/services/category.service';
@@ -32,7 +32,7 @@ export class AddProductComponent implements OnInit {
   uploadingImage = false;
 
   private imgbbApiKey = '0214b979a6fc244cbd91ce07422510fd';
-  form: any;
+  form!: FormGroup;
 
   constructor(
     private productService: ProductService,
@@ -84,6 +84,66 @@ export class AddProductComponent implements OnInit {
     event.preventDefault();
   }
 
+  async onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const base64 = await this.readFileAsBase64(file);
+
+  this.imagePreview = 'data:image/png;base64,' + base64;
+
+  await this.uploadToImgbb(base64);
+}
+
+readFileAsBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(',')[1];
+      resolve(base64);
+    };
+
+    reader.onerror = error => reject(error);
+
+    reader.readAsDataURL(file);
+  });
+}
+
+async uploadToImgbb(base64: string) {
+  this.uploadingImage = true;
+
+  const formData = new FormData();
+  formData.append('image', base64);
+
+  try {
+    const response = await fetch(
+      `https://api.imgbb.com/1/upload?key=${this.imgbbApiKey}`,
+      {
+        method: 'POST',
+        body: formData
+      }
+    );
+
+    const data = await response.json();
+
+    this.form.patchValue({
+      imageUrl: data.data.url
+    });
+
+  } catch (error) {
+    console.error('Error subiendo imagen', error);
+  } finally {
+    this.uploadingImage = false;
+  }
+}
+
+
+
+
+
+
   /*onFileSelected(event: any) {
     this.imageFile = event.target.files[0];
   }
@@ -106,7 +166,7 @@ export class AddProductComponent implements OnInit {
     return data.data.url;
   }*/
 
-  async onFileSelected(event: any) {
+  /*async onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
     // Preview inmediata
@@ -116,6 +176,31 @@ export class AddProductComponent implements OnInit {
     };
     reader.readAsDataURL(file);
     // Subir a imgbb
+    await this.uploadToImgbb(file);
+  }
+
+  async onFileSelected(event: any) {
+    const input = event.target as HTMLInputElement;
+    const originalFile = input.files?.[0];
+
+    if (!originalFile) return;
+
+    // 🔥 Clonar inmediatamente
+    const file = new File([originalFile], originalFile.name, {
+      type: originalFile.type
+    });
+
+    // Opcional: limpiar input
+    //input.value = '';
+
+    // Preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+
+    // Subida
     await this.uploadToImgbb(file);
   }
 
@@ -142,8 +227,62 @@ export class AddProductComponent implements OnInit {
     } finally {
       this.uploadingImage = false;
     }
+  }*/
+
+  /*async onFileSelected(event: any) {
+    console.log('formulario', this.form);
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = async () => {
+      const base64 = (reader.result as string).split(',')[1]; // 🔥 clave
+
+      this.imagePreview = reader.result as string;
+
+      await this.uploadToImgbb(base64);
+    };
+
+    reader.readAsDataURL(file);
   }
 
+  async uploadToImgbb(base64: string) {
+    const formData = new FormData();
+    formData.append('image', base64);
+
+    try {
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${this.imgbbApiKey}`, {
+        method: 'POST',
+        body: formData
+      })
+      const data = await response.json();
+      const imageUrl = data.data.url;
+      // Guardamos la URL en el form
+      this.form.patchValue({
+        imageUrl: imageUrl
+      });
+    } catch (error) {
+      console.error('Error subiendo imagen', error);
+    } finally {
+      this.uploadingImage = false;
+    }*/
+    /*.then(res => res.json())
+    .then(data => {
+      console.log('Imagen subida', data);
+      const imageUrl = new String(data.data.url);
+      console.log('url:', imageUrl);
+      // Guardamos la URL en el form
+      console.log('formulario', this.form);
+      this.form.patchValue({
+        imageUrl: "imageUrl"
+      });
+      console.log('formulario', this.form);
+    })
+    .catch(err => {
+      console.error('Error subiendo imagen', err);
+    });
+  }*/
   /*async saveProduct() {
     if (!this.name || !this.categoryId) return;
 
